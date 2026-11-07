@@ -1,108 +1,97 @@
-import { supabase } from "@/lib/supabase";
+import { createClient } from "redis";
 import { menu as defaultMenu } from "@/data/menu";
 
 export const ORDER_STATUSES = ["new", "cooking", "delivering", "done", "cancelled"];
 
+let clientPromise;
+
+// Redis bilan ulanishni bir marta ochib, qayta ishlatamiz
+function db() {
+  if (!clientPromise) {
+    const url = (process.env.REDIS_URL || "").trim();
+    if (!url) {
+      throw new Error("REDIS_URL yo'q: Vercel → Storage da Redis ni loyihaga ulang");
+    }
+
+    const client = createClient({ url });
+    client.on("error", (e) => console.error("Redis xatosi:", e));
+
+    clientPromise = client
+      .connect()
+      .then(() => client)
+      .catch((e) => {
+        clientPromise = undefined;
+        throw e;
+      });
+  }
+  return clientPromise;
+}
+
 /* ---------- Menyu ---------- */
 
-const toDish = (r) => ({
-  id: r.id,
-  name: r.name,
-  desc: r.description ?? "",
-  price: r.price,
-  category: r.category,
-  emoji: r.emoji ?? "🍽️",
-  image: r.image ?? "",
-  popular: r.popular,
-  available: r.available,
-});
-
-const fromDish = (d) => ({
-  id: d.id,
-  name: d.name,
-  description: d.desc ?? "",
-  price: d.price,
-  category: d.category,
-  emoji: d.emoji ?? "🍽️",
-  image: d.image ?? "",
+const normalize = (d) => ({
+  ...d,
   popular: Boolean(d.popular),
   available: d.available !== false,
 });
 
 export async function getMenu() {
-  const db = supabase();
-  const { data, error } = await db.from("menu_items").select("*").order("id");
-  if (error) throw error;
-
-  // Baza bo'sh bo'lsa, boshlang'ich menyuni bir marta yozib qo'yamiz
-  if (data.length === 0) {
-    const rows = defaultMenu.map(fromDish);
-    const { error: seedError } = await db.from("menu_items").upsert(rows);
-    if (seedError) throw seedError;
-    return rows.map(toDish);
+  try {
+    const r = await db();
+    const raw = await r.get("menu");
+    if (raw) {
+      const saved = JSON.parse(raw);
+      if (Array.isArray(saved)) return saved;
+    }
+  } catch (e) {
+    console.error("getMenu xatosi:", e);
   }
-
-  return data.map(toDish);
+  // Hali saqlanmagan bo'lsa yoki baza ishlamasa, boshlang'ich menyu
+  return defaultMenu.map(normalize);
 }
 
 export async function saveMenu(items) {
-  const db = supabase();
-  const rows = items.map(fromDish);
-
-  const { error } = await db.from("menu_items").upsert(rows);
-  if (error) throw error;
-
-  // Ro'yxatda yo'q taomlarni bazadan o'chiramiz
-  const ids = rows.map((r) => r.id);
-  const del = db.from("menu_items").delete();
-  const { error: delError } =
-    ids.length > 0 ? await del.not("id", "in", `(${ids.join(",")})`) : await del.gte("id", 0);
-  if (delError) throw delError;
+  const r = await db();
+  await r.set("menu", JSON.stringify(items));
 }
 
 /* ---------- Buyurtmalar ---------- */
 
-const toOrder = (r) => ({
-  id: r.id,
-  createdAt: r.created_at,
-  status: r.status,
-  customer: r.customer,
-  items: r.items,
-  total: r.total,
-});
-
 export async function getOrders() {
-  const { data, error } = await supabase()
-    .from("orders")
-    .select("*")
-    .order("id", { ascending: false });
-  if (error) throw error;
-  return data.map(toOrder);
+  const r = await db();
+  const all = await r.hGetAll("orders");
+
+  return Object.values(all)
+    .map((s) => JSON.parse(s))
+    .sort((a, b) => b.id - a.id);
 }
 
 export async function addOrder(order) {
-  const { data, error } = await supabase()
-    .from("orders")
-    .insert({
-      customer: order.customer,
-      items: order.items,
-      total: order.total,
-      status: "new",
-    })
-    .select()
-    .single();
-  if (error) throw error;
-  return toOrder(data);
+  const r = await db();
+  const id = 1000 + (await r.incr("order:seq"));
+
+  const full = {
+    id,
+    createdAt: new Date().toISOString(),
+    status: "new",
+    ...order,
+  };
+
+  await r.hSet("orders", String(id), JSON.stringify(full));
+  return full;
 }
 
 export async function updateOrderStatus(id, status) {
-  const { error } = await supabase().from("orders").update({ status }).eq("id", id);
-  if (error) throw error;
+  const r = await db();
+  const raw = await r.hGet("orders", String(id));
+  if (raw) {
+    await r.hSet("orders", String(id), JSON.stringify({ ...JSON.parse(raw), status }));
+  }
   return getOrders();
 }
 
 export async function deleteOrder(id) {
-  const { error } = await supabase().from("orders").delete().eq("id", id);
-  if (error) throw error;
+  const r = await db();
+  await r.hDel("orders", String(id));
   return getOrders();
 }
