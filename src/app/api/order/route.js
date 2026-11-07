@@ -81,6 +81,9 @@ export async function POST(request) {
     return NextResponse.json({ id: order.id });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: "Server xatosi" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server xatosi", detail: String(e?.message || e) },
+      { status: 500 }
+    );
   }
 }
