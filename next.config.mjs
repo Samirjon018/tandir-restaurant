@@ -1,6 +1,14 @@
-const supabaseHost = process.env.SUPABASE_URL
-  ? new URL(process.env.SUPABASE_URL).hostname
-  : null;
+function getSupabaseHost() {
+  try {
+    return process.env.SUPABASE_URL
+      ? new URL(process.env.SUPABASE_URL.trim()).hostname
+      : null;
+  } catch {
+    return null;
+  }
+}
+
+const supabaseHost = getSupabaseHost();
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
