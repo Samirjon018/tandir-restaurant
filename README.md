@@ -1,10 +1,15 @@
 <div align="center">
 <img src="docs/banner.png" alt="Tandir — onlayn buyurtma tizimi" width="100%">
 <br/>
+ 
 ![Next.js](https://img.shields.io/badge/Next.js-16-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+ 
 ![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+
 ![Telegram](https://img.shields.io/badge/Telegram-Bot_API-26A5E4?style=for-the-badge&logo=telegram&logoColor=white)
+
 ![Status](https://img.shields.io/badge/Holat-Ishlab_turibdi-2ea44f?style=for-the-badge)
+
 ![Made in](https://img.shields.io/badge/Made_in-Samarqand-c2410c?style=for-the-badge)
  
 **[✨ Imkoniyatlar](#-imkoniyatlar) · [🧭 Qanday ishlaydi](#-qanday-ishlaydi) · [🧰 Texnologiyalar](#-texnologiyalar) · [🚀 Ishga tushirish](#-ishga-tushirish) · [🗺️ Rejalar](#️-rejalar)**
