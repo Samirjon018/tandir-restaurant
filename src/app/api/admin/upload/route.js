@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
 import crypto from "crypto";
 import { isAdmin } from "@/lib/auth";
+import { supabase } from "@/lib/supabase";
 
 const MAX_SIZE = 3 * 1024 * 1024; // 3 MB
+const MIME = { jpg: "image/jpeg", png: "image/png", webp: "image/webp" };
 
 // Fayl turini nomiga emas, ichidagi haqiqiy belgilariga qarab aniqlaymiz
 function detectType(buf) {
@@ -46,11 +46,15 @@ export async function POST(request) {
     }
 
     const name = `${Date.now()}-${crypto.randomBytes(4).toString("hex")}.${ext}`;
-    const dir = path.join(process.cwd(), "public", "uploads");
-    await fs.mkdir(dir, { recursive: true });
-    await fs.writeFile(path.join(dir, name), buf);
+    const db = supabase();
 
-    return NextResponse.json({ path: `/uploads/${name}` });
+    const { error } = await db.storage
+      .from("menu-images")
+      .upload(name, buf, { contentType: MIME[ext], upsert: false });
+    if (error) throw error;
+
+    const { data } = db.storage.from("menu-images").getPublicUrl(name);
+    return NextResponse.json({ path: data.publicUrl });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Yuklashda xatolik" }, { status: 500 });
