@@ -37,3 +37,18 @@ export default function RootLayout({ children }) {
     </html>
   );
 }
+
+
+import { LanguageProvider } from "@/context/LanguageContext";
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="uz">
+      <body>
+        <LanguageProvider>
+          {children}
+        </LanguageProvider>
+      </body>
+    </html>
+  );
+}

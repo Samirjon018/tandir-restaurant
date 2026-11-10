@@ -10,22 +10,22 @@ export default function ContactsPage() {
           <div className="contact-card">
             <span>📍</span>
             <h3>Manzil</h3>
-            <p>Samarqand shahri, Registon ko'chasi 12</p>
+            <p>Samarqand shahri, Sho'rboi mahallasi</p>
           </div>
           <div className="contact-card">
             <span>📞</span>
             <h3>Telefon</h3>
-            <p><a href="tel:+998901234567">+998 90 123 45 67</a></p>
+            <p><a href="tel:+998901234567">+998 33 300 30 00</a></p>
           </div>
           <div className="contact-card">
             <span>🕙</span>
             <h3>Ish vaqti</h3>
-            <p>Har kuni 10:00 – 23:00</p>
+            <p>Har kuni 10:00 - 23:00</p>
           </div>
           <div className="contact-card">
             <span>✈️</span>
             <h3>Telegram</h3>
-            <p><a href="https://t.me/tandir_uz" target="_blank" rel="noreferrer">@tandir_uz</a></p>
+            <p><a href="https://t.me/Samirjon018" target="_blank" rel="noreferrer">@Samirjon018</a></p>
           </div>
         </div>
 

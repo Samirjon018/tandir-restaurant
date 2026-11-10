@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 const steps = [
   { icon: "🍽️", title: "Taom tanlang", text: "Menyudan o'zingizga yoqqan taomlarni savatga qo'shing." },
-  { icon: "📝", title: "Buyurtma bering", text: "Ism, telefon va manzilni yozing, qolganini biz hal qilamiz." },
+  { icon: "📫", title: "Buyurtma bering", text: "Ism, telefon va manzilni yozing, qolganini biz hal qilamiz." },
   { icon: "🚚", title: "Issiq yetkazamiz", text: "Buyurtmangiz tayyor bo'lgach, tezda eshigingizgacha olib boramiz." },
 ];
 

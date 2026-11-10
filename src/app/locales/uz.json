@@ -1,0 +1,17 @@
+{
+  "header": {
+    "menu": "Menyu",
+    "about": "Biz haqimizda",
+    "contacts": "Kontaktlar",
+    "cart": "Savat"
+  },
+  "hero": {
+    "title": "Ajoyib Milliy Taomlar",
+    "subtitle": "Bizning restoranda haqiqiy milliy lazzatni his eting!",
+    "orderBtn": "Buyurtma berish"
+  },
+  "contact": {
+    "phone": "Telefon raqamimiz",
+    "address": "Manzilimiz"
+  }
+}
