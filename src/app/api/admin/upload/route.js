@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import crypto from "crypto";
+import { put } from "@vercel/blob";
 import { isAdmin } from "@/lib/auth";
-import { supabase } from "@/lib/supabase";
 
 const MAX_SIZE = 3 * 1024 * 1024; // 3 MB
 const MIME = { jpg: "image/jpeg", png: "image/png", webp: "image/webp" };
@@ -45,16 +45,10 @@ export async function POST(request) {
       return NextResponse.json({ error: "Faqat JPG, PNG yoki WebP rasm mumkin" }, { status: 400 });
     }
 
-    const name = `${Date.now()}-${crypto.randomBytes(4).toString("hex")}.${ext}`;
-    const db = supabase();
+    const name = `menu/${Date.now()}-${crypto.randomBytes(4).toString("hex")}.${ext}`;
+    const blob = await put(name, buf, { access: "public", contentType: MIME[ext] });
 
-    const { error } = await db.storage
-      .from("menu-images")
-      .upload(name, buf, { contentType: MIME[ext], upsert: false });
-    if (error) throw error;
-
-    const { data } = db.storage.from("menu-images").getPublicUrl(name);
-    return NextResponse.json({ path: data.publicUrl });
+    return NextResponse.json({ path: blob.url });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Yuklashda xatolik" }, { status: 500 });
