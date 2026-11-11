@@ -8,6 +8,8 @@ function clean(d) {
   return {
     name: String(d.name || "").trim(),
     desc: String(d.desc || "").trim(),
+    nameRu: String(d.nameRu || "").trim(),
+    descRu: String(d.descRu || "").trim(),
     price: Math.max(0, Math.round(Number(d.price) || 0)),
     category: String(d.category || "main"),
     emoji: String(d.emoji || "🍽️"),

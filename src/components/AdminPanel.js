@@ -293,6 +293,12 @@ export default function AdminPanel({ initialOrders, initialMenu }) {
 
                   <label className="wide">Tavsif
                     <textarea name="desc" rows={2} value={form.desc} onChange={onField} />
+                    <label className="wide">Nomi (ruscha)
+                    <input name="nameRu" value={form.nameRu || ""} onChange={onField} />
+                      </label>
+                       <label className="wide">Tavsif (ruscha)
+                    <textarea name="descRu" rows={2} value={form.descRu || ""} onChange={onField} />
+                     </label>
                   </label>
                 </div>
 

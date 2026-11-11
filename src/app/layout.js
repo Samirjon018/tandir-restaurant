@@ -1,103 +1,47 @@
- import { Playfair_Display, Inter } from "next/font/google";
-
+import { Playfair_Display, Inter } from "next/font/google";
 import "./globals.css";
-
 import { CartProvider } from "@/context/CartContext";
-
+import { LanguageProvider } from "@/context/LanguageContext";
 import Header from "@/components/Header";
-
 import Footer from "@/components/Footer";
-
-
+import { getLang, getT } from "@/i18n/server";
 
 const playfair = Playfair_Display({
-
   subsets: ["latin", "cyrillic"],
-
   variable: "--font-title",
-
 });
-
 const inter = Inter({
-
   subsets: ["latin", "cyrillic"],
-
   variable: "--font-body",
-
 });
 
-
-
-export const metadata = {
-
-  title: "Tandir — O'zbek milliy taomlari restorani",
-
-  description:
-
-    "Tandir go'sht, osh, manti, samsa va boshqa milliy taomlar. Onlayn buyurtma bering.",
-
-  openGraph: {
-
-    title: "Tandir — O'zbek milliy taomlari",
-
-    description: "Tandirdan chiqqan haqiqiy ta'm. Onlayn buyurtma bering.",
-
-    type: "website",
-
-  },
-
-};
-
-
-
-export default function RootLayout({ children }) {
-
-  return (
-
-    <html lang="uz" data-scroll-behavior="smooth">
-
-      <body className={`${playfair.variable} ${inter.variable}`}>
-
-        <CartProvider>
-
-          <Header />
-
-          <main>{children}</main>
-
-          <Footer />
-
-        </CartProvider>
-
-      </body>
-
-    </html>
-
-  );
-
+export async function generateMetadata() {
+  const { t } = await getT();
+  return {
+    title: t("meta.title"),
+    description: t("meta.description"),
+    openGraph: {
+      title: t("meta.title"),
+      description: t("meta.ogDescription"),
+      type: "website",
+    },
+  };
 }
 
-
-
-
-
-export default function RootLayout({ children }) {
+export default async function RootLayout({ children }) {
+  const lang = await getLang();
 
   return (
-
-    <html lang="uz">
-
-      <body>
-
-        <LanguageProvider>
-
-          {children}
-
+    <html lang={lang} data-scroll-behavior="smooth">
+      <body className={`${playfair.variable} ${inter.variable}`}>
+        <LanguageProvider initialLang={lang}>
+          <CartProvider>
+            <Header />
+            <main>{children}</main>
+            <Footer />
+          </CartProvider>
         </LanguageProvider>
-
       </body>
-
     </html>
-
   );
-
-} 
+}

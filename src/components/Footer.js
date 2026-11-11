@@ -1,28 +1,31 @@
 import Link from "next/link";
+import { getT } from "@/i18n/server";
 
-export default function Footer() {
+export default async function Footer() {
+  const { t } = await getT();
+
   return (
     <footer className="footer">
       <div className="container footer-grid">
         <div>
           <h3>🔥 Tandir</h3>
-          <p>O'zbek milliy taomlari. Tandirdan yangi, issiq, mehr bilan.</p>
+          <p>{t("footer.tagline")}</p>
         </div>
         <div>
-          <h4>Sahifalar</h4>
-          <Link href="/">Bosh sahifa</Link>
-          <Link href="/menu">Menyu</Link>
-          <Link href="/cart">Savat</Link>
-          <Link href="/contacts">Kontaktlar</Link>
+          <h4>{t("footer.pages")}</h4>
+          <Link href="/">{t("nav.home")}</Link>
+          <Link href="/menu">{t("nav.menu")}</Link>
+          <Link href="/cart">{t("nav.cart")}</Link>
+          <Link href="/contacts">{t("nav.contacts")}</Link>
         </div>
         <div>
-          <h4>Ish vaqti</h4>
-          <p>Har kuni: 10:00 – 23:00</p>
+          <h4>{t("footer.hours")}</h4>
+          <p>{t("footer.hoursValue")}</p>
           <p>📞 +998 90 123 45 67</p>
-          <p>📍 Samarqand, Registon ko'chasi 12</p>
+          <p>📍 {t("footer.address")}</p>
         </div>
       </div>
-      <div className="copyright">© 2026 Tandir. Barcha huquqlar himoyalangan.</div>
+      <div className="copyright">© 2026 Tandir. {t("footer.rights")}</div>
     </footer>
   );
 }

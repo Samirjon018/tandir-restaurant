@@ -2,10 +2,12 @@
 
 import Image from "next/image";
 import { useState } from "react";
-import { categories, formatPrice } from "@/data/menu";
+import { categories } from "@/data/menu";
 import { useCart } from "@/context/CartContext";
+import { useLang } from "@/context/LanguageContext";
+import { formatPriceLang, localDesc, localName } from "@/i18n/dictionaries";
 
-function DishImage({ dish }) {
+function DishImage({ dish, alt }) {
   const [failed, setFailed] = useState(false);
 
   if (!dish.image || failed) {
@@ -16,7 +18,7 @@ function DishImage({ dish }) {
     <div className="card-img">
       <Image
         src={dish.image}
-        alt={dish.name}
+        alt={alt}
         fill
         sizes="(max-width: 600px) 100vw, 280px"
         onError={() => setFailed(true)}
@@ -30,13 +32,16 @@ export default function MenuGrid({ items, showFilters = true }) {
   const [query, setQuery] = useState("");
   const [justAdded, setJustAdded] = useState(null);
   const { add } = useCart();
+  const { t, lang } = useLang();
 
   const q = query.trim().toLowerCase();
 
   const list = items.filter((d) => {
     const byCategory = active === "all" || d.category === active;
+    // Qidiruv ikkala tilda ham ishlaydi
     const bySearch =
-      !q || d.name.toLowerCase().includes(q) || d.desc.toLowerCase().includes(q);
+      !q ||
+      [d.name, d.nameRu, d.desc, d.descRu].some((s) => s && s.toLowerCase().includes(q));
     return byCategory && bySearch;
   });
 
@@ -53,7 +58,7 @@ export default function MenuGrid({ items, showFilters = true }) {
           <div className="search-box">
             <input
               type="search"
-              placeholder="🔎 Taom qidirish..."
+              placeholder={t("menu.search")}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
@@ -66,7 +71,7 @@ export default function MenuGrid({ items, showFilters = true }) {
                 className={`chip ${active === c.id ? "chip-active" : ""}`}
                 onClick={() => setActive(c.id)}
               >
-                {c.name}
+                {t(`cat.${c.id}`)}
               </button>
             ))}
           </div>
@@ -74,20 +79,20 @@ export default function MenuGrid({ items, showFilters = true }) {
       )}
 
       {list.length === 0 ? (
-        <p className="no-results">Hech narsa topilmadi 😔 Boshqa so'z bilan urinib ko'ring.</p>
+        <p className="no-results">{t("menu.noResults")}</p>
       ) : (
         <div className="grid">
           {list.map((dish) => (
             <article key={dish.id} className="card">
-              {dish.popular && <span className="ribbon">⭐ Ommabop</span>}
-              <DishImage dish={dish} />
+              {dish.popular && <span className="ribbon">⭐ {t("menu.popular")}</span>}
+              <DishImage dish={dish} alt={localName(dish, lang)} />
               <div className="card-body">
-                <h3>{dish.name}</h3>
-                <p>{dish.desc}</p>
+                <h3>{localName(dish, lang)}</h3>
+                <p>{localDesc(dish, lang)}</p>
                 <div className="card-bottom">
-                  <span className="price">{formatPrice(dish.price)}</span>
+                  <span className="price">{formatPriceLang(dish.price, lang)}</span>
                   <button className="btn btn-small" onClick={() => handleAdd(dish)}>
-                    {justAdded === dish.id ? "✓ Qo'shildi" : "+ Savatga"}
+                    {justAdded === dish.id ? t("menu.added") : t("menu.add")}
                   </button>
                 </div>
               </div>

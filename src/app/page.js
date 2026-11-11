@@ -2,40 +2,41 @@ import Link from "next/link";
 import { getMenu } from "@/lib/store";
 import MenuGrid from "@/components/MenuGrid";
 import Reveal from "@/components/Reveal";
+import { getT } from "@/i18n/server";
 
 export const dynamic = "force-dynamic";
 
-const steps = [
-  { icon: "🍽️", title: "Taom tanlang", text: "Menyudan o'zingizga yoqqan taomlarni savatga qo'shing." },
-  { icon: "📫", title: "Buyurtma bering", text: "Ism, telefon va manzilni yozing, qolganini biz hal qilamiz." },
-  { icon: "🚚", title: "Issiq yetkazamiz", text: "Buyurtmangiz tayyor bo'lgach, tezda eshigingizgacha olib boramiz." },
-];
-
-const reviews = [
-  { name: "Dilshod", city: "Samarqand", text: "Tandir go'shtini yeb ko'rdim, juda yumshoq va mazali. Yetkazib berish ham tez bo'ldi." },
-  { name: "Madina", city: "Samarqand", text: "Oilaviy tushlik uchun osh va samsa buyurtma berdik. Hammaga yoqdi, albatta yana buyurtma beramiz!" },
-  { name: "Jasur", city: "Samarqand", text: "Sayt qulay, buyurtma berish bir daqiqa oldi. Taomlar issiq va yangi keldi." },
-];
+const STEP_ICONS = ["🍽️", "📝", "🚚"];
 
 export default async function Home() {
+  const { t } = await getT();
   const menu = await getMenu();
   const visible = menu.filter((d) => d.available !== false);
   const popular = visible.filter((d) => d.popular);
+
+  const steps = [1, 2, 3].map((n) => ({
+    icon: STEP_ICONS[n - 1],
+    title: t(`steps.${n}.title`),
+    text: t(`steps.${n}.text`),
+  }));
+
+  const reviews = [1, 2, 3].map((n) => ({
+    name: t(`review.${n}.name`),
+    city: t("review.city"),
+    text: t(`review.${n}.text`),
+  }));
 
   return (
     <>
       {/* Hero */}
       <section className="hero">
         <div className="container hero-inner">
-          <p className="hero-tag">O'zbek milliy oshxonasi</p>
-          <h1>Tandirdan chiqqan haqiqiy ta'm</h1>
-          <p className="hero-text">
-            Samarqand oshi, tandir go'sht, issiq non va samsa. Barchasi yangi, issiq
-            va an'anaviy retsept bo'yicha tayyorlanadi.
-          </p>
+          <p className="hero-tag">{t("hero.tag")}</p>
+          <h1>{t("hero.title")}</h1>
+          <p className="hero-text">{t("hero.text")}</p>
           <div className="hero-buttons">
-            <Link href="/menu" className="btn">Menyuni ko'rish</Link>
-            <Link href="/contacts" className="btn btn-outline">Bog'lanish</Link>
+            <Link href="/menu" className="btn">{t("hero.btnMenu")}</Link>
+            <Link href="/contacts" className="btn btn-outline">{t("hero.btnContact")}</Link>
           </div>
         </div>
       </section>
@@ -43,10 +44,10 @@ export default async function Home() {
       {/* Statistika */}
       <section className="stats">
         <div className="container stats-grid">
-          <div className="stat"><b>{visible.length}+</b><span>xil taom</span></div>
-          <div className="stat"><b>10+</b><span>yillik tajriba</span></div>
-          <div className="stat"><b>5000+</b><span>mamnun mijoz</span></div>
-          <div className="stat"><b>45</b><span>daqiqada yetkazish</span></div>
+          <div className="stat"><b>{visible.length}+</b><span>{t("stats.dishes")}</span></div>
+          <div className="stat"><b>10+</b><span>{t("stats.years")}</span></div>
+          <div className="stat"><b>5000+</b><span>{t("stats.clients")}</span></div>
+          <div className="stat"><b>45</b><span>{t("stats.delivery")}</span></div>
         </div>
       </section>
 
@@ -54,13 +55,13 @@ export default async function Home() {
       <section className="section">
         <div className="container">
           <Reveal>
-            <h2 className="section-title">Ommabop taomlar</h2>
+            <h2 className="section-title">{t("popular.title")}</h2>
           </Reveal>
           <Reveal delay={100}>
             <MenuGrid items={popular} showFilters={false} />
           </Reveal>
           <div className="center">
-            <Link href="/menu" className="btn btn-outline">Barcha menyu →</Link>
+            <Link href="/menu" className="btn btn-outline">{t("popular.all")}</Link>
           </div>
         </div>
       </section>
@@ -69,11 +70,11 @@ export default async function Home() {
       <section className="section section-alt">
         <div className="container">
           <Reveal>
-            <h2 className="section-title">Qanday buyurtma beramiz?</h2>
+            <h2 className="section-title">{t("steps.title")}</h2>
           </Reveal>
           <div className="steps">
             {steps.map((s, i) => (
-              <Reveal key={s.title} delay={i * 120}>
+              <Reveal key={i} delay={i * 120}>
                 <div className="step">
                   <div className="step-num">{i + 1}</div>
                   <div className="step-icon">{s.icon}</div>
@@ -89,27 +90,19 @@ export default async function Home() {
       {/* Afzalliklar */}
       <section className="section">
         <div className="container features">
-          <Reveal>
-            <div className="feature">
-              <span>🔥</span>
-              <h3>Haqiqiy tandir</h3>
-              <p>Go'sht va non loydan yasalgan tandirda pishiriladi.</p>
-            </div>
-          </Reveal>
-          <Reveal delay={120}>
-            <div className="feature">
-              <span>🌿</span>
-              <h3>Yangi mahsulotlar</h3>
-              <p>Har kuni bozordan olingan yangi go'sht va sabzavotlar.</p>
-            </div>
-          </Reveal>
-          <Reveal delay={240}>
-            <div className="feature">
-              <span>🚚</span>
-              <h3>Tez yetkazib berish</h3>
-              <p>Shahar bo'ylab 45 daqiqa ichida eshigingizgacha.</p>
-            </div>
-          </Reveal>
+          {[
+            { icon: "🔥", n: 1 },
+            { icon: "🌿", n: 2 },
+            { icon: "🚚", n: 3 },
+          ].map((f, i) => (
+            <Reveal key={f.n} delay={i * 120}>
+              <div className="feature">
+                <span>{f.icon}</span>
+                <h3>{t(`feature.${f.n}.title`)}</h3>
+                <p>{t(`feature.${f.n}.text`)}</p>
+              </div>
+            </Reveal>
+          ))}
         </div>
       </section>
 
@@ -121,15 +114,11 @@ export default async function Home() {
           </Reveal>
           <Reveal delay={120}>
             <div>
-              <h2 className="section-title left">Biz haqimizda</h2>
-              <p>
-                Tandir — oilaviy restoran. Biz ota-bobolarimizdan qolgan retseptlarni
-                asrab, mehmonlarimizga har kuni issiq va mazali taomlar taqdim etamiz.
-                Bizda har bir mehmon aziz.
-              </p>
+              <h2 className="section-title left">{t("about.title")}</h2>
+              <p>{t("about.text")}</p>
               <ul className="hours">
-                <li><span>Dushanba – Juma</span><b>10:00 – 23:00</b></li>
-                <li><span>Shanba – Yakshanba</span><b>09:00 – 00:00</b></li>
+                <li><span>{t("hours.weekdays")}</span><b>10:00 – 23:00</b></li>
+                <li><span>{t("hours.weekend")}</span><b>09:00 – 00:00</b></li>
               </ul>
             </div>
           </Reveal>
@@ -140,11 +129,11 @@ export default async function Home() {
       <section className="section">
         <div className="container">
           <Reveal>
-            <h2 className="section-title">Mijozlarimiz fikri</h2>
+            <h2 className="section-title">{t("reviews.title")}</h2>
           </Reveal>
           <div className="reviews">
             {reviews.map((r, i) => (
-              <Reveal key={r.name} delay={i * 120}>
+              <Reveal key={i} delay={i * 120}>
                 <div className="review">
                   <div className="stars">★★★★★</div>
                   <p>“{r.text}”</p>
@@ -163,13 +152,12 @@ export default async function Home() {
       <section className="cta">
         <div className="container">
           <Reveal>
-            <h2>Ochqadingizmi? Hoziroq buyurtma bering!</h2>
-            <p>Issiq taomlar tez orada eshigingizda bo'ladi.</p>
-            <Link href="/menu" className="btn">Buyurtma berish</Link>
+            <h2>{t("cta.title")}</h2>
+            <p>{t("cta.text")}</p>
+            <Link href="/menu" className="btn">{t("cta.btn")}</Link>
           </Reveal>
         </div>
       </section>
     </>
   );
 }
-

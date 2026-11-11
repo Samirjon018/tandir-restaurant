@@ -24,7 +24,7 @@ export function CartProvider({ children }) {
     setItems((prev) => {
       const found = prev.find((i) => i.id === dish.id);
       if (found) return prev.map((i) => (i.id === dish.id ? { ...i, qty: i.qty + 1 } : i));
-      return [...prev, { id: dish.id, name: dish.name, price: dish.price, emoji: dish.emoji, qty: 1 }];
+      return [...prev, { id: dish.id, name: dish.name, nameRu: dish.nameRu, price: dish.price, emoji: dish.emoji, qty: 1 }];
     });
 
   const decrease = (id) =>
