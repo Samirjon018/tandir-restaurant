@@ -45,7 +45,7 @@ export const menu = [
   { id: 26, name: "Achichuk", desc: "Pomidor, piyoz va achchiq qalampirdan yengil salat.", price: 15000, category: "salad", emoji: "🍅", image: "/images/menu/achichuk.jpg" },
   { id: 27, name: "Toshkent salati", desc: "Mol go'shti, turp, piyoz va smetana bilan.", price: 28000, category: "salad", emoji: "🥗", image: "/images/menu/toshkent-salati.jpg" },
   { id: 28, name: "Yangi sabzavot salati", desc: "Bodring, pomidor, ko'katlar, zaytun moyi bilan.", price: 20000, category: "salad", emoji: "🥒", image: "/images/menu/sabzavot-salati.jpg" },
-  { id: 35, name: "Olivye salati", desc: "Kartoshka, sabzi, tuxum va mayonez bilan.", price: 35000, category: "salad", emoji: "🥗", image: "/images/menu/olivye-salati.jpg" },
+  { id: 35, name: "Olivye salati", desc: "Kartoshka, sabzi, tuxum va mayonez bilan.", price: 35000, category: "salad", emoji: "🥗", image: "/images/menu/olivia-salad.jpg" },
 
   // Shirinliklar
   { id: 29, name: "Chak-chak", desc: "Asalli an'anaviy shirinlik.", price: 25000, category: "dessert", emoji: "🍯", image: "/images/menu/chak-chak.jpg" },
